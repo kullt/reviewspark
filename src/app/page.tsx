@@ -3,9 +3,41 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+
+const headlines = {
+  control: {
+    title: "Turn Google Reviews into",
+    highlight: "Social Media Gold",
+    subtitle: "Automatically import your best Google reviews and let AI generate engaging social media posts. Save hours of content creation and turn customer praise into marketing that converts."
+  },
+  problem: {
+    title: "Your 5-Star Reviews Are Wasted on Google.",
+    highlight: "Let's Fix That",
+    subtitle: "You get glowing reviews from happy customers. But they just sit on Google Maps while your Instagram and Facebook gather dust. ReviewSpark automatically turns each review into 3-5 ready-to-post social media updates."
+  },
+  outcome: {
+    title: "Turn Customer Praise Into",
+    highlight: "Posts That Bring New Customers",
+    subtitle: "Stop letting great reviews sit invisible on Google. Our AI transforms each 5-star review into engaging Instagram, Facebook, and TikTok content — complete with captions, hashtags, and image suggestions."
+  },
+  speed: {
+    title: "Social Media Content in",
+    highlight: "Seconds, Not Hours",
+    subtitle: "Connect your Google Business Profile. Get instant AI-generated posts from your best reviews. Approve with one click. Never stare at a blank content calendar again."
+  },
+  social: {
+    title: "What If Every 5-Star Review Became",
+    highlight: "5 New Customers?",
+    subtitle: "Your happy customers already wrote the marketing copy — you just need to share it. ReviewSpark automatically turns Google reviews into social posts that build trust and drive bookings."
+  }
+};
 
 export default function LandingPage() {
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const variant = searchParams.get('v') || 'control';
+  const content = headlines[variant as keyof typeof headlines] || headlines.control;
 
   async function handleCheckout(plan: "starter" | "pro") {
     setLoadingPlan(plan);
@@ -62,14 +94,13 @@ export default function LandingPage() {
         <section className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl">
-              Turn Google Reviews into{" "}
+              {content.title}{" "}
               <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                Social Media Gold
+                {content.highlight}
               </span>
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
-              Automatically import your best Google reviews and let AI generate engaging social media posts. 
-              Save hours of content creation and turn customer praise into marketing that converts.
+              {content.subtitle}
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link
