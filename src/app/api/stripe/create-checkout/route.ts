@@ -1,22 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe, STRIPE_PRICE_STARTER, STRIPE_PRICE_PRO } from "@/lib/stripe";
 
+const priceMap: Record<string, string> = {
+  starter: STRIPE_PRICE_STARTER,
+  pro: STRIPE_PRICE_PRO,
+};
+
 export async function POST(request: NextRequest) {
   try {
-    const { priceId, userId, email } = await request.json();
+    const { plan, userId, email } = await request.json();
 
-    if (!priceId || !email) {
+    if (!plan || !email) {
       return NextResponse.json(
-        { error: "Price ID and email are required" },
+        { error: "Plan and email are required" },
         { status: 400 }
       );
     }
 
-    // Validate price ID
-    const validPriceIds = [STRIPE_PRICE_STARTER, STRIPE_PRICE_PRO];
-    if (!validPriceIds.includes(priceId)) {
+    // Validate plan
+    const priceId = priceMap[plan.toLowerCase()];
+    if (!priceId) {
       return NextResponse.json(
-        { error: "Invalid price ID" },
+        { error: "Invalid plan. Must be 'starter' or 'pro'" },
         { status: 400 }
       );
     }
@@ -31,14 +36,15 @@ export async function POST(request: NextRequest) {
         },
       ],
       mode: "subscription",
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing?canceled=true`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cancel`,
       metadata: {
         userId: userId || "",
+        plan: plan,
       },
     });
 
-    return NextResponse.json({ sessionId: session.id, url: session.url });
+    return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error("Create checkout error:", error);
     return NextResponse.json(

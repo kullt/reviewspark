@@ -1,7 +1,39 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function LandingPage() {
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+
+  async function handleCheckout(plan: "starter" | "pro") {
+    setLoadingPlan(plan);
+    try {
+      // Get user email - for now using a placeholder, in production get from auth
+      const email = "user@example.com"; // TODO: Get from Supabase auth
+      
+      const response = await fetch("/api/stripe/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan, email }),
+      });
+
+      const data = await response.json();
+      
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Failed to create checkout session");
+        setLoadingPlan(null);
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      alert("Something went wrong. Please try again.");
+      setLoadingPlan(null);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Hero Section */}
@@ -152,12 +184,13 @@ export default function LandingPage() {
                     Email support
                   </li>
                 </ul>
-                <Link
-                  href="/dashboard"
-                  className="mt-8 block w-full rounded-lg bg-blue-600 px-3 py-2 text-center text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                <button
+                  onClick={() => handleCheckout("starter")}
+                  disabled={loadingPlan === "starter"}
+                  className="mt-8 block w-full rounded-lg bg-blue-600 px-3 py-2 text-center text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Get started
-                </Link>
+                  {loadingPlan === "starter" ? "Loading..." : "Get started"}
+                </button>
               </div>
 
               {/* Pro Plan */}
@@ -200,12 +233,13 @@ export default function LandingPage() {
                     Scheduled posting (coming soon)
                   </li>
                 </ul>
-                <Link
-                  href="/dashboard"
-                  className="mt-8 block w-full rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold leading-6 text-blue-600 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                <button
+                  onClick={() => handleCheckout("pro")}
+                  disabled={loadingPlan === "pro"}
+                  className="mt-8 block w-full rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold leading-6 text-blue-600 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Get started
-                </Link>
+                  {loadingPlan === "pro" ? "Loading..." : "Get started"}
+                </button>
               </div>
             </div>
           </div>
