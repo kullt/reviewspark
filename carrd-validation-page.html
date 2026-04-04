@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReviewSpark — Turn Google Reviews Into Social Media Posts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .badge {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 42px;
+            line-height: 1.1;
+            color: #1f2937;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        .highlight {
+            background: linear-gradient(120deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        p.subtitle {
+            font-size: 20px;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            color: #4b5563;
+        }
+        .check {
+            width: 24px;
+            height: 24px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        input[type="email"] {
+            padding: 16px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(102, 126, 234, 0.4);
+        }
+        .trust {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 14px;
+            color: #9ca3af;
+        }
+        .pricing {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .price-card {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .price-card.pro {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea08 0%, #764ba208 100%);
+        }
+        .price-name {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .price-amount {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1f2937;
+        }
+        .price-period {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+        @media (max-width: 500px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 32px;
+            }
+            p.subtitle {
+                font-size: 18px;
+            }
+            .pricing {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="badge">🚀 Coming Soon — Join the Waitlist</span>
+        
+        <h1>Turn Your <span class="highlight">Google Reviews</span> Into Social Media Gold</h1>
+        
+        <p class="subtitle">
+            AI automatically finds your best customer reviews and turns them into ready-to-post social media content. No more staring at a blank screen.
+        </p>
+        
+        <div class="features">
+            <div class="feature">
+                <span class="check">✓</span>
+                <span>Paste your Google Business URL — we do the rest</span>
+            </div>
+            <div class="feature">
+                <span class="check">✓</span>
+                <span>AI selects the best reviews and writes engaging posts</span>
+            </div>
+            <div class="feature">
+                <span class="check">✓</span>
+                <span>Copy-paste ready for Instagram, Facebook, Twitter</span>
+            </div>
+            <div class="feature">
+                <span class="check">✓</span>
+                <span>Schedule a month of content in 10 minutes</span>
+            </div>
+        </div>
+        
+        <div class="pricing">
+            <div class="price-card">
+                <div class="price-name">Starter</div>
+                <div class="price-amount">$19</div>
+                <div class="price-period">/month</div>
+            </div>
+            <div class="price-card pro">
+                <div class="price-name">Pro</div>
+                <div class="price-amount">$39</div>
+                <div class="price-period">/month</div>
+            </div>
+        </div>
+        
+        <form class="form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+            <input type="email" name="email" placeholder="Enter your email for early access" required>
+            <input type="hidden" name="source" value="carrd-validation">
+            <button type="submit">Get Early Access →</button>
+        </form>
+        
+        <p class="trust">
+            🎁 Early access members get 50% off first 3 months. No spam, unsubscribe anytime.
+        </p>
+    </div>
+</body>
+</html>
