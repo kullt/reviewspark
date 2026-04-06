@@ -10,12 +10,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/supabase-js": "^2.49.4",
     "next": "16.2.2",
+    "openai": "^4.91.1",
+    "playwright": "^1.59.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "@supabase/supabase-js": "^2.49.4",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
-    "openai": "^4.91.1",
     "stripe": "^17.7.0"
   },
   "devDependencies": {
