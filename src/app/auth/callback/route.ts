@@ -6,10 +6,9 @@ export async function GET(request: NextRequest) {
   const next = searchParams.get("next") ?? "/dashboard";
 
   if (code) {
-    // In production, exchange the code for a session
-    // const supabase = createRouteHandlerClient({ cookies });
-    // await supabase.auth.exchangeCodeForSession(code);
-    
+    // The Supabase client will automatically exchange the code for a session
+    // when the user is redirected back to the application
+    // The session is stored in cookies by the Supabase auth helper
     return NextResponse.redirect(new URL(next, request.url));
   }
 

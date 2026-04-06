@@ -14,10 +14,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for auth session
-  const authCookie = request.cookies.get("sb-auth-token");
+  // Check for Supabase auth session cookie
+  // Supabase sets sb-access-token cookie when user is authenticated
+  const accessToken = request.cookies.get("sb-access-token");
+  const authToken = request.cookies.get("sb-auth-token");
+  const supabaseSession = request.cookies.get("sb-jilhqlznhnchvmmvumxd-auth-token");
 
-  if (!authCookie && pathname.startsWith("/dashboard")) {
+  const isAuthenticated = accessToken || authToken || supabaseSession;
+
+  if (!isAuthenticated && pathname.startsWith("/dashboard")) {
     // Redirect to login if accessing dashboard without auth
     return NextResponse.redirect(new URL("/login", request.url));
   }

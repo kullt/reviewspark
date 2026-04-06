@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,10 +15,18 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    // In production, integrate with Supabase auth
-    // const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error: authError } = await supabase.auth.signInWithPassword({ 
+      email, 
+      password 
+    });
 
-    // For demo, just redirect to dashboard
+    if (authError) {
+      setError(authError.message);
+      setLoading(false);
+      return;
+    }
+
+    // Redirect to dashboard on success
     window.location.href = "/dashboard";
   };
 
@@ -87,10 +96,6 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
-
-        <p className="text-center text-xs text-gray-500 dark:text-gray-400">
-          Demo mode - no actual authentication required
-        </p>
       </div>
     </div>
   );
