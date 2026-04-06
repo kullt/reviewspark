@@ -75,6 +75,9 @@ function LandingPageContent() {
             <span className="text-xl font-bold text-gray-900 dark:text-white">ReviewSpark</span>
           </div>
           <div className="flex items-center gap-4">
+            <Link href="/blog" className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+              Blog
+            </Link>
             <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
               Sign in
             </Link>
