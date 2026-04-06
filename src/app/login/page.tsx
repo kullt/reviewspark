@@ -32,6 +32,7 @@ export default function LoginPage() {
       // Redirect to dashboard on success
       window.location.href = "/dashboard";
     } catch (err) {
+      console.error("Login error:", err);
       setError(handleAuthError(err));
       setLoading(false);
     }
