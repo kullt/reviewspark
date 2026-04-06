@@ -1,13 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-key";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://jilhqlznhnchvmmvumxd.supabase.co";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppbGhxbHpuaG5jaHZtbXZ1bXhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDQ2ODEsImV4cCI6MjA5MDg4MDY4MX0.1F8UAxddLFyKM5nd4Han8n7L11AeKdqQoINLs45TSH4";
 
-// Validate key format - should be JWT format (eyJ...) not the new sb_publishable format
-if (supabaseAnonKey.startsWith("sb_")) {
-  console.error("[Supabase] WARNING: Using new API key format (sb_*). Auth may not work correctly.");
-  console.error("[Supabase] Please use the legacy JWT format anon key (starts with eyJ) from your Supabase dashboard.");
-}
+// Note: Supabase supports both legacy JWT format (eyJ...) and new publishable keys (sb_)
+// Using legacy JWT format for maximum compatibility
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
