@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [debugInfo, setDebugInfo] = useState<string[]>([]);
+  const [showDebug, setShowDebug] = useState(false);
 
   // Log to both console and debug state
   const log = (msg: string) => {
@@ -25,6 +26,23 @@ export default function LoginPage() {
     log(`Supabase client: ${!!supabase ? "OK" : "MISSING"}`);
     log(`Supabase auth: ${!!supabase?.auth ? "OK" : "MISSING"}`);
   }, []);
+
+  // Add Shift+D keyboard handler for debug panel
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.shiftKey && e.key === 'D') {
+        e.preventDefault();
+        setShowDebug(prev => !prev);
+        log("Debug panel toggled via Shift+D");
+      }
+      if (e.key === 'Escape' && showDebug) {
+        setShowDebug(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showDebug]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,8 +92,6 @@ export default function LoginPage() {
   };
 
   // Debug panel for troubleshooting
-  const [showDebug, setShowDebug] = useState(false);
-
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-900">
       <div className="w-full max-w-md space-y-8">
