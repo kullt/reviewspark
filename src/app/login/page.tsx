@@ -2,23 +2,31 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { handleAuthError } from "@/lib/auth-errors";
 import { ErrorMessage } from "@/components/ErrorMessage";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [debugInfo, setDebugInfo] = useState<string[]>([]);
   const [showDebug, setShowDebug] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   // Log to both console and debug state
   const log = (msg: string) => {
     console.log(`[LoginPage] ${msg}`);
     setDebugInfo(prev => [...prev.slice(-4), `[${new Date().toLocaleTimeString()}] ${msg}`]);
   };
+
+  // Mark as client-side mounted to ensure hydration is complete
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Check Supabase on mount
   useEffect(() => {
@@ -81,8 +89,8 @@ export default function LoginPage() {
       }
 
       log("Login successful! Redirecting to dashboard...");
-      // Redirect to dashboard on success
-      window.location.href = "/dashboard";
+      // Redirect to dashboard on success using Next.js router
+      router.push("/dashboard");
     } catch (err) {
       log(`EXCEPTION caught: ${err instanceof Error ? err.message : "Unknown error"}`);
       console.error("Login error:", err);
@@ -92,6 +100,28 @@ export default function LoginPage() {
   };
 
   // Debug panel for troubleshooting
+  if (!isClient) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-900">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600">
+              <span className="text-xl font-bold text-white">R</span>
+            </div>
+            <h2 className="mt-6 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Sign in to ReviewSpark
+            </h2>
+          </div>
+          <div className="animate-pulse space-y-4">
+            <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+            <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-900">
       <div className="w-full max-w-md space-y-8">
