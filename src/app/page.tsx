@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
+import { useState, Suspense } from "react";
 import Link from "next/link";
-import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 const headlines = {
@@ -33,7 +32,7 @@ const headlines = {
   }
 };
 
-export default function LandingPage() {
+function LandingPageContent() {
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const variant = searchParams.get('v') || 'control';
@@ -292,5 +291,23 @@ export default function LandingPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+      <div className="animate-pulse">
+        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600" />
+      </div>
+    </div>
+  );
+}
+
+export default function LandingPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <LandingPageContent />
+    </Suspense>
   );
 }
