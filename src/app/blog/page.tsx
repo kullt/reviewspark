@@ -14,6 +14,46 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "google-reviews-instagram-engagement",
+    title: "From Google Reviews to Instagram Engagement: A Small Business Guide",
+    excerpt: "Learn how local businesses can transform Google reviews into engaging Instagram content that drives real engagement, builds trust, and attracts new customers.",
+    category: "Small Business",
+    readTime: "10 min read",
+    keywords: ["Google reviews Instagram", "local business social media", "review marketing"],
+  },
+  {
+    slug: "wasted-5-star-reviews",
+    title: "Wasted 5-Star Reviews: Why Your Best Customer Praise Never Gets Seen",
+    excerpt: "Discover why collecting 5-star reviews is only half the battle. Learn review marketing strategies that amplify social proof and maximize your reputation investment.",
+    category: "Strategy",
+    readTime: "9 min read",
+    keywords: ["5-star reviews", "review marketing", "social proof strategy"],
+  },
+  {
+    slug: "social-proof-marketing-guide-2026",
+    title: "Social Proof Marketing Guide 2026: Turn Reviews Into Revenue",
+    excerpt: "Master social proof marketing for local businesses in 2026. Learn proven strategies to leverage reviews, testimonials, and user-generated content.",
+    category: "2026 Guide",
+    readTime: "11 min read",
+    keywords: ["social proof marketing", "local business marketing 2026", "review strategy"],
+  },
+  {
+    slug: "restaurant-customer-marketing",
+    title: "Restaurant Customer Marketing: The Review-to-Social Playbook",
+    excerpt: "Discover 5 proven strategies restaurants use to transform satisfied customers into powerful marketing assets. Drive word-of-mouth, boost reviews, and fill more seats.",
+    category: "Restaurants",
+    readTime: "10 min read",
+    keywords: ["restaurant customer marketing", "restaurant word-of-mouth", "restaurant social media"],
+  },
+  {
+    slug: "service-business-review-automation",
+    title: "Service Business Review Automation: From Feedback to Marketing",
+    excerpt: "Learn how service businesses can automatically turn Yelp and Google reviews into Instagram content. Save hours, boost engagement, and convert reviews into customers.",
+    category: "Service Businesses",
+    readTime: "12 min read",
+    keywords: ["service business automation", "review to social media", "Yelp to Instagram"],
+  },
+  {
     slug: "restaurant-reviews-instagram",
     title: "How Restaurants Can Turn 5-Star Reviews Into Instagram Engagement That Drives Reservations",
     excerpt: "Learn proven strategies for restaurants to transform glowing customer reviews into Instagram content that stops the scroll, sparks engagement, and fills tables.",
