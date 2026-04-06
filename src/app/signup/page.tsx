@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { handleAuthError } from "@/lib/auth-errors";
+import { ErrorMessage } from "@/components/ErrorMessage";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -10,29 +12,75 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [autoConfirmed, setAutoConfirmed] = useState(false);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    const { error: authError } = await supabase.auth.signUp({ 
-      email, 
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`
+    try {
+      const { data, error: authError } = await supabase.auth.signUp({ 
+        email, 
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+
+      if (authError) {
+        setError(handleAuthError(authError));
+        setLoading(false);
+        return;
       }
-    });
 
-    if (authError) {
-      setError(authError.message);
+      // Check if user already exists (email confirmation not required)
+      if (data?.user?.identities?.length === 0) {
+        setError("This email is already registered. Try signing in instead.");
+        setLoading(false);
+        return;
+      }
+
+      // Check if email confirmation is disabled (user can sign in immediately)
+      if (data?.session) {
+        // Auto-confirmed - user has active session
+        setAutoConfirmed(true);
+        setSuccess(true);
+        // Redirect to dashboard after a brief delay
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 1500);
+      } else {
+        // Email confirmation required
+        setSuccess(true);
+      }
+    } catch (err) {
+      setError(handleAuthError(err));
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setSuccess(true);
-    setLoading(false);
   };
+
+  if (success && autoConfirmed) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-900">
+        <div className="w-full max-w-md space-y-8 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-green-500">
+            <span className="text-xl font-bold text-white">✓</span>
+          </div>
+          <h2 className="mt-6 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+            Account created!
+          </h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Welcome to ReviewSpark. Redirecting you to your dashboard...
+          </p>
+          <div className="mt-4">
+            <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (success) {
     return (
@@ -45,11 +93,16 @@ export default function SignupPage() {
             Check your email
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            We&apos;ve sent you a confirmation link. Please check your email to complete your registration.
+            We&apos;ve sent you a confirmation link. Please check your email (including spam/junk folder) to complete your registration.
           </p>
-          <Link href="/login" className="mt-4 inline-block font-medium text-blue-600 hover:text-blue-500">
-            Back to sign in
-          </Link>
+          <div className="mt-4 space-y-2">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Didn&apos;t receive it? Wait a minute and try signing up again, or
+            </p>
+            <Link href="/login" className="inline-block font-medium text-blue-600 hover:text-blue-500">
+              try signing in
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -109,7 +162,11 @@ export default function SignupPage() {
           </div>
 
           {error && (
-            <p className="text-sm text-red-600">{error}</p>
+            <ErrorMessage 
+              message={error} 
+              onDismiss={() => setError("")}
+              type="error"
+            />
           )}
 
           <div>

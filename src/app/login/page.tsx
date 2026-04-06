@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { handleAuthError } from "@/lib/auth-errors";
+import { ErrorMessage } from "@/components/ErrorMessage";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -15,19 +17,24 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    const { error: authError } = await supabase.auth.signInWithPassword({ 
-      email, 
-      password 
-    });
+    try {
+      const { error: authError } = await supabase.auth.signInWithPassword({ 
+        email, 
+        password 
+      });
 
-    if (authError) {
-      setError(authError.message);
+      if (authError) {
+        setError(handleAuthError(authError));
+        setLoading(false);
+        return;
+      }
+
+      // Redirect to dashboard on success
+      window.location.href = "/dashboard";
+    } catch (err) {
+      setError(handleAuthError(err));
       setLoading(false);
-      return;
     }
-
-    // Redirect to dashboard on success
-    window.location.href = "/dashboard";
   };
 
   return (
@@ -83,7 +90,11 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <p className="text-sm text-red-600">{error}</p>
+            <ErrorMessage 
+              message={error} 
+              onDismiss={() => setError("")}
+              type="error"
+            />
           )}
 
           <div>
