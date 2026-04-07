@@ -1,0 +1,343 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
+import { Sparkles, Loader2, Copy, Check, LogOut, History, Wand2 } from 'lucide-react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+interface SocialPost {
+  platform: 'instagram' | 'facebook' | 'twitter'
+  content: string
+  hashtags: string[]
+}
+
+// Social Platform Icons as inline SVGs
+const InstagramIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+  </svg>
+)
+
+const FacebookIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+  </svg>
+)
+
+const TwitterIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+)
+
+export default function DashboardPage() {
+  const [user, setUser] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [businessName, setBusinessName] = useState('')
+  const [reviewText, setReviewText] = useState('')
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [generatedPosts, setGeneratedPosts] = useState<SocialPost[] | null>(null)
+  const [history, setHistory] = useState<any[]>([])
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
+  const [error, setError] = useState('')
+  const router = useRouter()
+
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        console.log('Auth state change:', event, 'Session:', session ? 'exists' : 'null')
+        
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+          if (session) {
+            setUser(session.user)
+            setLoading(false)
+          }
+        } else if (event === 'SIGNED_OUT') {
+          setUser(null)
+          router.push('/login')
+        }
+      }
+    )
+
+    // Initial session check
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        router.push('/login')
+        return
+      }
+      setUser(session.user)
+      setLoading(false)
+    }
+    
+    checkAuth()
+    loadHistory()
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [router])
+
+  const loadHistory = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) return
+
+    const { data, error } = await supabase
+      .from('generations')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .order('created_at', { ascending: false })
+      .limit(5)
+
+    if (!error && data) {
+      setHistory(data)
+    }
+  }
+
+  const handleGenerate = async () => {
+    if (!reviewText.trim() || !businessName.trim()) return
+
+    setIsGenerating(true)
+    setError('')
+    setGeneratedPosts(null)
+
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reviewText, businessName }),
+      })
+
+      if (!response.ok) {
+        const err = await response.json()
+        throw new Error(err.error || 'Failed to generate')
+      }
+
+      const data = await response.json()
+      setGeneratedPosts(data.posts)
+
+      // Save to history
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        await supabase.from('generations').insert({
+          user_id: session.user.id,
+          business_name: businessName,
+          review_text: reviewText,
+          posts: data.posts,
+        })
+        loadHistory()
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to generate posts')
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  const handleCopy = (text: string, index: number) => {
+    navigator.clipboard.writeText(text)
+    setCopiedIndex(index)
+    setTimeout(() => setCopiedIndex(null), 2000)
+  }
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.push('/')
+  }
+
+  const getPlatformIcon = (platform: string) => {
+    switch (platform) {
+      case 'instagram': return <InstagramIcon />
+      case 'facebook': return <FacebookIcon />
+      case 'twitter': return <TwitterIcon />
+      default: return <Sparkles className="w-5 h-5" />
+    }
+  }
+
+  const getPlatformColor = (platform: string) => {
+    switch (platform) {
+      case 'instagram': return 'from-pink-500 to-purple-500'
+      case 'facebook': return 'from-blue-500 to-blue-600'
+      case 'twitter': return 'from-sky-500 to-blue-500'
+      default: return 'from-indigo-500 to-violet-500'
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      {/* Loading State */}
+      {loading && (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+            <p className="text-slate-600 dark:text-slate-400">Loading...</p>
+          </div>
+        </div>
+      )}
+      
+      {/* Dashboard Content - Only show when not loading and user is authenticated */}
+      {!loading && user && (
+        <>
+          {/* Header */}
+          <header className="border-b border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-xl tracking-tight">ReviewSpark</span>
+          </Link>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-slate-600 dark:text-slate-400 hidden sm:inline">
+              {user?.email}
+            </span>
+            <button
+              onClick={handleLogout}
+              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Input Section */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+              <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
+                <Wand2 className="w-5 h-5 text-indigo-600" />
+                Generate Social Posts
+              </h2>
+
+              {error && (
+                <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm">
+                  {error}
+                </div>
+              )}
+
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Business Name</label>
+                  <input
+                    type="text"
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                    placeholder="e.g., Joe's Coffee Shop"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Google Review</label>
+                  <textarea
+                    value={reviewText}
+                    onChange={(e) => setReviewText(e.target.value)}
+                    placeholder="Paste your Google review text here..."
+                    rows={6}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none"
+                  />
+                </div>
+
+                <button
+                  onClick={handleGenerate}
+                  disabled={isGenerating || !reviewText.trim() || !businessName.trim()}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold transition-all flex items-center justify-center gap-2"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-5 h-5" />
+                      Generate Social Posts
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Results */}
+            {generatedPosts && (
+              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+                <h3 className="text-lg font-semibold mb-4">Generated Posts</h3>
+                <div className="space-y-4">
+                  {generatedPosts.map((post, index) => (
+                    <div
+                      key={index}
+                      className="p-5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r ${getPlatformColor(post.platform)} text-white text-sm font-medium`}>
+                          {getPlatformIcon(post.platform)}
+                          {post.platform.charAt(0).toUpperCase() + post.platform.slice(1)}
+                        </div>
+                        <button
+                          onClick={() => handleCopy(`${post.content}\n\n${post.hashtags.map(h => '#' + h).join(' ')}`, index)}
+                          className="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400 transition-colors"
+                        >
+                          {copiedIndex === index ? (
+                            <Check className="w-4 h-4 text-green-600" />
+                          ) : (
+                            <Copy className="w-4 h-4" />
+                          )}
+                        </button>
+                      </div>
+                      <p className="text-slate-800 dark:text-slate-200 whitespace-pre-wrap mb-3">
+                        {post.content}
+                      </p>
+                      <p className="text-indigo-600 dark:text-indigo-400 text-sm">
+                        {post.hashtags.map(h => '#' + h).join(' ')}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar - History */}
+          <div className="lg:col-span-1">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm sticky top-24">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <History className="w-5 h-5 text-slate-500" />
+                Recent History
+              </h3>
+
+              {history.length === 0 ? (
+                <p className="text-slate-500 text-sm text-center py-8">
+                  No generations yet. Create your first post!
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {history.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-500 transition-all"
+                      onClick={() => setGeneratedPosts(item.posts)}
+                    >
+                      <p className="font-medium text-sm truncate">{item.business_name}</p>
+                      <p className="text-slate-500 text-xs truncate mt-1">
+                        {item.review_text.slice(0, 50)}...
+                      </p>
+                      <p className="text-slate-400 text-xs mt-2">
+                        {new Date(item.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </main>
+        </>
+      )}
+    </div>
+  )
+}
