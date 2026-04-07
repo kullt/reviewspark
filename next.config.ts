@@ -1,7 +1,10 @@
-import type { NextConfig } from "next";
+# Build succeeded. Fixing tsconfig.json for vercel deployment.
 
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  turbopack: {
+    root: process.cwd(),
+  },
 };
 
 export default nextConfig;

@@ -3,5 +3,11 @@
   "outputDirectory": ".next",
   "framework": "nextjs",
   "installCommand": "npm install",
-  "devCommand": "next dev"
+  "devCommand": "next dev",
+  "crons": [
+    {
+      "path": "/api/cron/sync-reviews",
+      "schedule": "0 */6 * * *"
+    }
+  ]
 }
