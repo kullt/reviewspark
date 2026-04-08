@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'ReviewSpark - Turn Google Reviews into Social Posts',
   description: 'Transform your Google Reviews into engaging social media content with AI. Save hours of writing and amplify your best customer moments.',
   alternates: {
-    canonical: 'https://reviewspark.vercel.app',
+    canonical: 'https://review-to-post-tau.vercel.app',
   },
 }
 
@@ -56,12 +56,12 @@ const jsonLd = {
     'Custom branding',
     'Team collaboration',
   ],
-  screenshot: 'https://reviewspark.vercel.app/og-image.png',
+  screenshot: 'https://review-to-post-tau.vercel.app/opengraph-image',
   softwareVersion: '1.0',
   creator: {
     '@type': 'Organization',
     name: 'ReviewSpark',
-    url: 'https://reviewspark.vercel.app',
+    url: 'https://review-to-post-tau.vercel.app',
   },
 }
 

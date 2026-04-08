@@ -39,11 +39,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'ReviewSpark - Turn Google Reviews into Social Posts',
     description: 'Transform your Google Reviews into engaging social media content with AI. Save hours of writing and amplify your best customer moments.',
-    url: 'https://reviewspark.vercel.app',
+    url: 'https://review-to-post-tau.vercel.app',
     siteName: 'ReviewSpark',
     images: [
       {
-        url: 'https://reviewspark.vercel.app/og-image.png',
+        url: 'https://review-to-post-tau.vercel.app/opengraph-image',
         width: 1200,
         height: 630,
         alt: 'ReviewSpark - AI-Powered Review to Social Media Converter',
@@ -56,11 +56,11 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'ReviewSpark - Turn Google Reviews into Social Posts',
     description: 'Transform your Google Reviews into engaging social media content with AI. Save hours of writing.',
-    images: ['https://reviewspark.vercel.app/og-image.png'],
+    images: ['https://review-to-post-tau.vercel.app/opengraph-image'],
     creator: '@reviewspark',
   },
   alternates: {
-    canonical: 'https://reviewspark.vercel.app',
+    canonical: 'https://review-to-post-tau.vercel.app',
   },
   authors: [{ name: 'ReviewSpark' }],
   creator: 'ReviewSpark',
