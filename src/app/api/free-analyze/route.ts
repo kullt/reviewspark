@@ -1,36 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
-  try {
-    const { review } = await request.json();
-
-    if (!review || typeof review !== "string") {
-      return NextResponse.json({ error: "Review is required" }, { status: 400 });
-    }
-
-    if (review.length > 2000) {
-      return NextResponse.json({ error: "Review too long. Maximum 2000 characters." }, { status: 400 });
-    }
-
-    // Check for OpenAI API key
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 500 });
-    }
-
-    // Call OpenAI
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content: `You are a social media expert who transforms customer reviews into engaging social media posts.
+const SYSTEM_PROMPT = `You are a social media expert who transforms customer reviews into engaging social media posts.
 
 Your task is to:
 1. Analyze the sentiment of the review (brief summary)
@@ -50,12 +20,24 @@ Rules:
 - Keep the caption authentic and engaging, not salesy
 - Preserve specific details from the review (names, services, outcomes)
 - Make it sound like something a business owner would naturally post
-- The caption should be 2-3 sentences maximum`
-          },
-          {
-            role: "user",
-            content: `Transform this customer review into a social media post:\n\n${review}`
-          }
+- The caption should be 2-3 sentences maximum`;
+
+async function tryOpenAI(review: string): Promise<{ success: boolean; data?: unknown; error?: string }> {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return { success: false, error: "No OpenAI API key" };
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: `Transform this customer review into a social media post:\n\n${review}` }
         ],
         temperature: 0.7,
         max_tokens: 500,
@@ -66,30 +48,108 @@ Rules:
     if (!response.ok) {
       const errorText = await response.text();
       console.error("OpenAI error:", errorText);
-      return NextResponse.json({ error: "Failed to analyze review" }, { status: 500 });
+      return { success: false, error: errorText };
     }
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
+    if (!content) return { success: false, error: "No content" };
 
-    if (!content) {
-      return NextResponse.json({ error: "Failed to generate response" }, { status: 500 });
+    return { success: true, data: content };
+  } catch (error) {
+    console.error("OpenAI exception:", error);
+    return { success: false, error: String(error) };
+  }
+}
+
+async function tryFireworks(review: string): Promise<{ success: boolean; data?: unknown; error?: string }> {
+  const apiKey = process.env.FIREWORKS_API_KEY;
+  if (!apiKey) return { success: false, error: "No Fireworks API key" };
+
+  try {
+    // Using Fireworks AI with Llama 3.1 8B (fast and free tier available)
+    const response = await fetch("https://api.fireworks.ai/inference/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "accounts/fireworks/models/llama-v3p1-8b-instruct",
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: `Transform this customer review into a social media post:\n\n${review}` }
+        ],
+        temperature: 0.7,
+        max_tokens: 500,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Fireworks error:", errorText);
+      return { success: false, error: errorText };
     }
 
-    // Parse the JSON response
-    let parsed;
-    try {
-      parsed = JSON.parse(content);
-    } catch {
-      // If parsing fails, try to extract from the content
-      parsed = {
-        sentiment: "Positive review",
-        keywords: ["great service", "highly recommend"],
-        socialPost: content,
-        hashtags: "#CustomerLove #FiveStars #HighlyRecommend"
-      };
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) return { success: false, error: "No content" };
+
+    return { success: true, data: content };
+  } catch (error) {
+    console.error("Fireworks exception:", error);
+    return { success: false, error: String(error) };
+  }
+}
+
+function parseResult(content: string) {
+  try {
+    return JSON.parse(content);
+  } catch {
+    // Try to extract JSON from the content
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try {
+        return JSON.parse(jsonMatch[0]);
+      } catch {
+        // Fall through to default
+      }
+    }
+    // Default fallback
+    return {
+      sentiment: "Positive review",
+      keywords: ["great service", "highly recommend"],
+      socialPost: content.substring(0, 200),
+      hashtags: "#CustomerLove #FiveStars #HighlyRecommend"
+    };
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const { review } = await request.json();
+
+    if (!review || typeof review !== "string") {
+      return NextResponse.json({ error: "Review is required" }, { status: 400 });
     }
 
+    if (review.length > 2000) {
+      return NextResponse.json({ error: "Review too long. Maximum 2000 characters." }, { status: 400 });
+    }
+
+    // Try OpenAI first, fall back to Fireworks AI
+    let result = await tryOpenAI(review);
+    
+    if (!result.success) {
+      console.log("OpenAI failed, trying Fireworks AI fallback...");
+      result = await tryFireworks(review);
+    }
+
+    if (!result.success || !result.data) {
+      return NextResponse.json({ error: "Service temporarily unavailable. Please try again later." }, { status: 500 });
+    }
+
+    const parsed = parseResult(String(result.data));
     return NextResponse.json(parsed);
 
   } catch (error) {
