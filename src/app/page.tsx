@@ -287,6 +287,11 @@ function LandingPageContent() {
               <div className="h-6 w-6 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600" />
               <span className="text-lg font-semibold text-gray-900 dark:text-white">ReviewSpark</span>
             </div>
+            <div className="flex items-center gap-4 text-sm">
+              <a href="/terms" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Terms</a>
+              <a href="/privacy" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Privacy</a>
+              <a href="/pricing" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Pricing</a>
+            </div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               © 2026 ReviewSpark. All rights reserved.
             </p>
