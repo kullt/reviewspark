@@ -138,6 +138,7 @@ export default function AccountantGoogleReviews() {
         <h3>High-Net-Worth Individuals</h3>
         <p>
           Reviews that mention estate planning, investment advice, and complex tax situations signal to similar prospects that you can handle their needs.
+        </p>
 
         <h3>Specific Industries</h3>
         <p>
