@@ -237,6 +237,23 @@ const posts = [
     readTime: "9 min read",
     keywords: ["real estate agent reviews", "realtor marketing", "real estate reputation"],
   },
+  // Beauty & Personal Services
+  {
+    slug: "tattoo-artist-google-reviews",
+    title: "Tattoo Artist Google Reviews: How to Build Trust and Book More Clients",
+    excerpt: "Learn how tattoo artists can leverage Google reviews to build trust, showcase their art, and attract more clients.",
+    category: "Beauty & Art",
+    readTime: "12 min read",
+    keywords: ["tattoo artist reviews", "tattoo studio marketing", "tattoo reputation"],
+  },
+  {
+    slug: "nail-salon-google-reviews",
+    title: "Nail Salon Google Reviews: How to Build Trust and Attract More Clients",
+    excerpt: "Learn how nail salons can leverage Google reviews to build trust, showcase their work, and attract more clients.",
+    category: "Beauty & Art",
+    readTime: "11 min read",
+    keywords: ["nail salon reviews", "nail salon marketing", "nail technician reputation"],
+  },
 ];
 
 export default function BlogPage() {
