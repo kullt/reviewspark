@@ -414,6 +414,24 @@ const posts = [
     readTime: "9 min read",
     keywords: ["solar installer reviews", "solar company marketing", "solar panel reputation"],
   },
+  // Childcare & Education
+  {
+    slug: "childcare-daycare-google-reviews",
+    title: "Childcare & Daycare Google Reviews: How to Build Trust and Attract More Families",
+    excerpt: "Learn how childcare centers and daycares can leverage Google reviews to build trust with parents, increase enrollment, and stand out in a competitive market.",
+    category: "Childcare & Education",
+    readTime: "10 min read",
+    keywords: ["childcare reviews", "daycare marketing", "preschool reputation"],
+  },
+  // Healthcare - Specialty
+  {
+    slug: "orthodontist-google-reviews",
+    title: "Orthodontist Google Reviews: How to Build Trust and Attract More Patients",
+    excerpt: "Learn how orthodontists can leverage Google reviews to build trust with parents, attract new patients, and grow their practice in a competitive market.",
+    category: "Healthcare",
+    readTime: "10 min read",
+    keywords: ["orthodontist reviews", "braces marketing", "invisalign reputation"],
+  },
 ];
 
 export default function BlogPage() {
