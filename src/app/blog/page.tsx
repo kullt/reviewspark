@@ -504,6 +504,33 @@ const posts = [
     readTime: "11 min read",
     keywords: ["event planner reviews", "event planning marketing", "wedding planner reputation"],
   },
+  // Healthcare - Vision
+  {
+    slug: "optometrist-eye-doctor-google-reviews",
+    title: "Optometrist & Eye Doctor Google Reviews: How to Build Trust and Attract More Patients",
+    excerpt: "Learn how optometrists and eye doctors can leverage Google reviews to build patient trust, improve local SEO, and grow their practice.",
+    category: "Healthcare",
+    readTime: "10 min read",
+    keywords: ["optometrist google reviews", "eye doctor reviews", "optometry marketing", "vision care reviews"],
+  },
+  // Healthcare - Rehabilitation
+  {
+    slug: "physical-therapy-google-reviews",
+    title: "Physical Therapy Google Reviews: How to Build Trust and Attract More Patients",
+    excerpt: "Learn how physical therapists can leverage Google reviews to build patient trust, improve local SEO, and grow their practice.",
+    category: "Healthcare",
+    readTime: "11 min read",
+    keywords: ["physical therapy google reviews", "physiotherapy reviews", "physical therapist marketing", "PT practice reviews"],
+  },
+  // Home Services - Tree Care
+  {
+    slug: "tree-service-google-reviews",
+    title: "Tree Service Google Reviews: How to Build Trust and Get More Calls",
+    excerpt: "Learn how tree service companies can leverage Google reviews to build homeowner trust, improve local SEO, and grow their business.",
+    category: "Home Services",
+    readTime: "10 min read",
+    keywords: ["tree service google reviews", "tree removal reviews", "arborist marketing", "tree care reviews"],
+  },
 ];
 
 export default function BlogPage() {
