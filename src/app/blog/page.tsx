@@ -531,6 +531,33 @@ const posts = [
     readTime: "10 min read",
     keywords: ["tree service google reviews", "tree removal reviews", "arborist marketing", "tree care reviews"],
   },
+  // Healthcare - Dermatology
+  {
+    slug: "dermatologist-google-reviews",
+    title: "Dermatologist Google Reviews: How to Build Trust and Attract More Patients",
+    excerpt: "Learn how dermatologists can leverage Google reviews to build trust with potential patients, increase bookings, and grow their practice.",
+    category: "Healthcare",
+    readTime: "11 min read",
+    keywords: ["dermatologist google reviews", "dermatology reviews", "skin doctor reviews", "cosmetic dermatology reviews"],
+  },
+  // Financial Services - Mortgage
+  {
+    slug: "mortgage-broker-google-reviews",
+    title: "Mortgage Broker Google Reviews: How to Build Trust and Close More Loans",
+    excerpt: "Learn how mortgage brokers can leverage Google reviews to build trust with homebuyers, increase referrals, and grow their lending business.",
+    category: "Financial Services",
+    readTime: "11 min read",
+    keywords: ["mortgage broker google reviews", "mortgage broker reviews", "lender reviews", "home loan reviews"],
+  },
+  // Senior Care
+  {
+    slug: "assisted-living-google-reviews",
+    title: "Assisted Living Google Reviews: How to Build Trust and Attract Families",
+    excerpt: "Learn how assisted living facilities can leverage Google reviews to build trust with families, increase inquiries, and grow occupancy.",
+    category: "Senior Care",
+    readTime: "12 min read",
+    keywords: ["assisted living google reviews", "senior living reviews", "memory care reviews", "elder care reviews"],
+  },
 ];
 
 export default function BlogPage() {
