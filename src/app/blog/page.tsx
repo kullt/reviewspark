@@ -468,6 +468,42 @@ const posts = [
     readTime: "10 min read",
     keywords: ["junk removal reviews", "junk hauling marketing", "waste removal reputation"],
   },
+  // Construction & Contracting
+  {
+    slug: "general-contractor-google-reviews",
+    title: "General Contractor Google Reviews: How to Build Trust and Win More Construction Projects",
+    excerpt: "Learn how general contractors can leverage Google Reviews to win more construction projects, build credibility, and grow their contracting business.",
+    category: "Construction",
+    readTime: "10 min read",
+    keywords: ["general contractor reviews", "construction marketing", "contractor reputation"],
+  },
+  // Property Management
+  {
+    slug: "property-management-google-reviews",
+    title: "Property Management Google Reviews: How to Build Trust and Win More Property Owners",
+    excerpt: "Learn how property management companies can leverage Google Reviews to attract property owners, increase portfolio size, and build lasting client relationships.",
+    category: "Real Estate",
+    readTime: "10 min read",
+    keywords: ["property management reviews", "property manager marketing", "real estate management reputation"],
+  },
+  // Home Services - Painting
+  {
+    slug: "painting-services-google-reviews",
+    title: "Painting Services Google Reviews: How to Build Trust and Win More Painting Contracts",
+    excerpt: "Learn how painting contractors can leverage Google Reviews to win more residential and commercial painting projects, build credibility, and grow their business.",
+    category: "Home Services",
+    readTime: "10 min read",
+    keywords: ["painting services reviews", "painter marketing", "painting contractor reputation"],
+  },
+  // Events & Entertainment
+  {
+    slug: "event-planner-google-reviews",
+    title: "Event Planner Google Reviews: How to Build Trust and Win More Events",
+    excerpt: "Learn how event planners can leverage Google Reviews to attract corporate and social clients, build credibility, and grow their event planning business.",
+    category: "Events",
+    readTime: "11 min read",
+    keywords: ["event planner reviews", "event planning marketing", "wedding planner reputation"],
+  },
 ];
 
 export default function BlogPage() {
