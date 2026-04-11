@@ -432,6 +432,42 @@ const posts = [
     readTime: "10 min read",
     keywords: ["orthodontist reviews", "braces marketing", "invisalign reputation"],
   },
+  // Home Services - Emergency
+  {
+    slug: "garage-door-repair-google-reviews",
+    title: "Garage Door Repair Google Reviews: How to Build Trust and Get More Emergency Calls",
+    excerpt: "Learn how garage door repair companies can leverage Google Reviews to build trust, attract more customers, and grow their business.",
+    category: "Home Services",
+    readTime: "10 min read",
+    keywords: ["garage door repair reviews", "garage door marketing", "door repair reputation"],
+  },
+  // Professional Services - Design
+  {
+    slug: "interior-designer-google-reviews",
+    title: "Interior Designer Google Reviews: How to Build Trust and Win More High-End Projects",
+    excerpt: "Learn how interior designers can leverage Google Reviews to build credibility, attract premium clients, and grow their design business.",
+    category: "Professional Services",
+    readTime: "11 min read",
+    keywords: ["interior designer reviews", "design firm marketing", "designer reputation"],
+  },
+  // Automotive - Detailing
+  {
+    slug: "car-detailing-google-reviews",
+    title: "Car Detailing Google Reviews: How to Build Trust and Attract More Premium Clients",
+    excerpt: "Learn how car detailing businesses can leverage Google Reviews to build trust, attract premium clients, and grow their detailing business.",
+    category: "Automotive",
+    readTime: "10 min read",
+    keywords: ["car detailing reviews", "auto detailing marketing", "ceramic coating reputation"],
+  },
+  // Home Services - Removal
+  {
+    slug: "junk-removal-google-reviews",
+    title: "Junk Removal Google Reviews: How to Build Trust and Get More Calls",
+    excerpt: "Learn how junk removal companies can leverage Google Reviews to build trust, attract more customers, and grow their business.",
+    category: "Home Services",
+    readTime: "10 min read",
+    keywords: ["junk removal reviews", "junk hauling marketing", "waste removal reputation"],
+  },
 ];
 
 export default function BlogPage() {
